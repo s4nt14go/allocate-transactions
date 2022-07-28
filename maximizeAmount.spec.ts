@@ -1,8 +1,42 @@
 import { prioritize, Transaction } from './maximizeAmount';
 import fs from 'fs';
 
-test('Test name', () => {
+test('1', () => {
   const prioritized = prioritize(readFile());
+});
+
+test('first prioritization by amount per ms and secondly by amount', () => {
+  const transactions = [
+    {
+      id: '1',
+      amount: 100,
+      bank_country_code: 'us',
+    },
+    {
+      id: '2',
+      amount: 200,
+      bank_country_code: 'ar',
+    },
+    {
+      id: '3',
+      amount: 200,
+      bank_country_code: 'ar',
+    },
+    {
+      id: '4',
+      amount: 100,
+      bank_country_code: 'au',
+    },
+  ];
+  const latencies = {
+    us: 1,
+    ar: 2,
+    au: 3,
+  };
+
+  const prioritization = prioritize(transactions, 4, latencies);
+
+  expect(prioritization.totalAmount).toBe(400);
 });
 
 function readFile() {

@@ -1,34 +1,48 @@
-const latencies: { [key: string]: number } = require('./latencies.json');
+const fileLatencies: { [key: string]: number } = require('./latencies.json');
 /**
- * Returns a subset (or full array) that will maximize the USD amount and fit the transactions under 1 second
- * @param _transactions Input transactions
- * @param totalTime Period time in milliseconds
- * @returns transactions Prioritized transactions
+ * Returns a subset (or full array) that will maximize the USD amount and fit the transactions under totalTime
+ * @param transactions
+ * @param [totalTime] Period time in milliseconds (default 1000ms)
+ * @param [latencies] Default is latencies file
+ * @returns prioritization
  */
 export function prioritize(
-  _transactions: Transaction[],
-  totalTime = 1000
-): TransactionWithMetric[] {
-  const transactions = _transactions.map((transaction) => ({
+  transactions: Transaction[],
+  totalTime = 1000,
+  latencies = fileLatencies
+): Prioritization {
+  const _transactions = transactions.map((transaction) => ({
     ...transaction,
     amount_per_ms: transaction.amount / latencies[transaction.bank_country_code],
   }));
 
-  transactions.sort((b, a) => a.amount_per_ms - b.amount_per_ms);
+  _transactions.sort((b, a) => {  // first sort by amount_per_ms, secondly by amount
+    const sortByAmountPerMs = a.amount_per_ms - b.amount_per_ms;
+    const sortByAmount = a.amount - b.amount;
+    const offsetAmountPerMs = Math.trunc(Math.abs(sortByAmount)).toString().length;
+    return sortByAmountPerMs * 10 ** offsetAmountPerMs + sortByAmount
+  });
 
   let remainingTime = totalTime;
   const prioritized = [];
 
-  for (let i = 0; i < transactions.length; i++) {
-    const latency = latencies[transactions[i].bank_country_code];
+  for (let i = 0; i < _transactions.length; i++) {
+    const latency = latencies[_transactions[i].bank_country_code];
     if (latency > remainingTime) {
       break;
     }
-    prioritized.push(transactions[i]);
+    prioritized.push(_transactions[i]);
     remainingTime -= latency;
   }
 
-  return prioritized;
+  const totalAmount = prioritized.reduce((acc, obj) => {
+    return acc + obj.amount;
+  }, 0);
+
+  return {
+    prioritized,
+    totalAmount,
+  };
 }
 
 export type Transaction = {
@@ -36,4 +50,7 @@ export type Transaction = {
   amount: number;
   bank_country_code: string;
 };
-type TransactionWithMetric = Transaction & { amount_per_ms: number };
+type Prioritization = {
+  prioritized: (Transaction & { amount_per_ms: number })[];
+  totalAmount: number;
+};
