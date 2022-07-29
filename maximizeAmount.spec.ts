@@ -2,7 +2,7 @@ import { prioritize, Transaction } from './maximizeAmount';
 import fs from 'fs';
 
 describe('prioritize latency file', () => {
-  test.each([[1000, 47, 35371.51999999999, 994], [50, 4, 3637.98, 42], [60, 5, 4362.01, 52], [90, 8, 6870.4800000000005, 88]])(
+  test.each([[1000, 47, 35371.51999999999, 994], [90, 8, 6870.4800000000005, 88], [60, 5, 4362.01, 52], [50, 4, 3637.98, 42]])(
       'for a maximum time of %ims gives %i transactions with a total amount of $%i processed in %ims',
       (totalTime, expectedLength, expectedTotalAmount, expectedTotalTime) => {
         const prioritization = prioritize(readFile(), totalTime);

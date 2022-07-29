@@ -1,3 +1,5 @@
+## Exercise
+
 You have a real-time fraud-detection system that accepts transactions and returns `true` or `false` if transaction is fraudulent or not.
 Transaction class
 ```js
@@ -74,3 +76,18 @@ You can use any language for the implementation, but our preference is TypeScrip
 For simplicity, please ignore the time to run the prioritization itself, your goal is to fit the maximum USD transaction amount into the allotted time slots.
 
 **Please briefly describe your algorithm and why you think it's optimal. If you had multiple solutions in mind, why did you choose this particular one?**
+
+## Responses
+
+| Max time \[ms] | Max amount \[USD] | # transactions | Processing time \[ms] |
+| -------------: | ----------------: | -------------: | --------------------: |
+| 1000           |         35,371.52 |             47 |                   994 |
+| 90             |         6,870.48  |              8 |                    88 |
+| 60             |         4,362.01  |              5 |                    52 |
+| 50             |         3,637.98  |              4 |                    42 |
+
+### Algorithm
+
+I calculate the amount per ms dividing the amount by the latency and sort the transactions according that rate descendingly. As a second sorting criteria I sort the transactions by latency, descendingly too. In order to differentiate the first and second I have to offset the first criteria using `offsetAmountPerMs`.
+
+To came up with this algorithm I compared this problem with having a jar in which I want to fit in the maximum weight of stones. Every stone has a specific weight measured in weight per volume (analogous to `amount_per_ms`) and weight (`amount`), the limited jar volume is analogous to our `totalTime` argument. First I put those stones that maximize weight per volume and if I have several stones with the same weight per volume I start with the heaviest/biggest ones. If a stone doesn't fit, I throw it away and continue with the next one.
