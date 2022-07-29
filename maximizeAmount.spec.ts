@@ -1,12 +1,17 @@
 import { prioritize, Transaction } from './maximizeAmount';
 import fs from 'fs';
 
-test('latency file', () => {
-  const prioritization = prioritize(readFile());
+describe('prioritize latency file', () => {
+  test.each([[1000, 47, 35371.51999999999, 994], [50, 4, 3637.98, 42], [60, 5, 4362.01, 52], [90, 8, 6870.4800000000005, 88]])(
+      'for a maximum time of %ims gives %i transactions with a total amount of $%i processed in %ims',
+      (totalTime, expectedLength, expectedTotalAmount, expectedTotalTime) => {
+        const prioritization = prioritize(readFile(), totalTime);
 
-  expect(prioritization.prioritized.length).toBe(47);
-  expect(prioritization.totalAmount).toBe(35371.51999999999);
-  expect(prioritization.totalTime).toBe(994);
+        expect(prioritization.prioritized.length).toBe(expectedLength);
+        expect(prioritization.totalAmount).toBe(expectedTotalAmount);
+        expect(prioritization.totalTime).toBe(expectedTotalTime);
+      },
+  );
 });
 
 it('prioritizes secondly by latency', () => {

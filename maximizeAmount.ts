@@ -2,13 +2,13 @@ const fileLatencies: { [key: string]: number } = require('./latencies.json');
 /**
  * Returns a subset (or full array) that will maximize the USD amount and fit the transactions under totalTime
  * @param transactions
- * @param [totalTime] Period time in milliseconds (default 1000ms)
+ * @param totalTime Period time in milliseconds
  * @param [latencies] Default is latencies file
  * @returns prioritization
  */
 export function prioritize(
   transactions: Transaction[],
-  totalTime = 1000,
+  totalTime: number,
   latencies = fileLatencies
 ): Prioritization {
   const _transactions = transactions.map((transaction) => ({
