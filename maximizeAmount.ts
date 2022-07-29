@@ -42,9 +42,14 @@ export function prioritize(
     return acc + obj.amount;
   }, 0);
 
+  const totalProcessingTime = prioritized.reduce((acc, obj) => {
+    return acc + obj.latency;
+  }, 0);
+
   return {
     prioritized,
     totalAmount,
+    totalTime: totalProcessingTime,
   };
 }
 
@@ -59,4 +64,5 @@ type Prioritization = {
     latency: number;
   })[];
   totalAmount: number;
+  totalTime: number;
 };

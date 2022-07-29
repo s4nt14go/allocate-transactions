@@ -6,6 +6,7 @@ test('latency file', () => {
 
   expect(prioritization.prioritized.length).toBe(47);
   expect(prioritization.totalAmount).toBe(35371.51999999999);
+  expect(prioritization.totalTime).toBe(994);
 });
 
 it('prioritizes secondly by latency', () => {
@@ -41,6 +42,7 @@ it('prioritizes secondly by latency', () => {
 
   expect(prioritization.prioritized.length).toBe(2);
   expect(prioritization.totalAmount).toBe(400);
+  expect(prioritization.totalTime).toBe(4);
 });
 
 test(`after stumbling into the first transaction that doesn't fit in the remaining time, it continues checking if lower latency transactions fit`, () => {
@@ -76,6 +78,7 @@ test(`after stumbling into the first transaction that doesn't fit in the remaini
 
   expect(prioritization.prioritized.length).toBe(3);
   expect(prioritization.totalAmount).toBe(700);
+  expect(prioritization.totalTime).toBe(6);
 });
 
 function readFile() {
