@@ -14,22 +14,25 @@ export function prioritize(
   const _transactions = transactions.map((transaction) => ({
     ...transaction,
     amount_per_ms: transaction.amount / latencies[transaction.bank_country_code],
+    latency: latencies[transaction.bank_country_code],
   }));
 
-  _transactions.sort((b, a) => {  // first sort by amount_per_ms, secondly by amount
+  _transactions.sort((b, a) => {
+    // first sort by amount_per_ms, secondly by latency
     const sortByAmountPerMs = a.amount_per_ms - b.amount_per_ms;
-    const sortByAmount = a.amount - b.amount;
-    const offsetAmountPerMs = Math.trunc(Math.abs(sortByAmount)).toString().length;
-    return sortByAmountPerMs * 10 ** offsetAmountPerMs + sortByAmount
+    const sortByLatency = a.latency - b.latency;
+    const offsetAmountPerMs = Math.trunc(Math.abs(sortByLatency)).toString()
+      .length;
+    return sortByAmountPerMs * 10 ** offsetAmountPerMs + sortByLatency;
   });
 
   let remainingTime = totalTime;
   const prioritized = [];
 
   for (let i = 0; i < _transactions.length; i++) {
-    const latency = latencies[_transactions[i].bank_country_code];
+    const latency = _transactions[i].latency;
     if (latency > remainingTime) {
-      break;
+      continue;
     }
     prioritized.push(_transactions[i]);
     remainingTime -= latency;
@@ -51,6 +54,9 @@ export type Transaction = {
   bank_country_code: string;
 };
 type Prioritization = {
-  prioritized: (Transaction & { amount_per_ms: number })[];
+  prioritized: (Transaction & {
+    amount_per_ms: number;
+    latency: number;
+  })[];
   totalAmount: number;
 };
