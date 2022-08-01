@@ -35,7 +35,7 @@ it('prioritizes 4 tests transactions', () => {
 
   expect(prioritization.transactions.length).toBe(2);
   expect(prioritization.totalAmount).toBe(70);
-  expect(prioritization.latency).toBe(9);
+  expect(prioritization.latency).toBe(4);
 });
 
 describe('prioritizes using exercise files', () => {

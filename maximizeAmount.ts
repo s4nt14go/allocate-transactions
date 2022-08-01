@@ -49,7 +49,7 @@ export function prioritize(
         const newLatency = smallPrevCombination.latency + transaction.latency;
         if (newLatency <= col && newAmount > prevCombination.totalAmount) {
           matrix[row][col] = {
-            totalAmount: parseFloat(newAmount.toFixed(2)),
+            totalAmount: Number(newAmount.toFixed(2)),
             transactions: [...smallPrevCombination.transactions, transaction],
             latency: newLatency,
           };
