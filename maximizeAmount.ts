@@ -28,15 +28,18 @@ export function prioritize(
     );
   for (let row = 1; row < matrix.length; row++) {
     const transaction = _transactions[row - 1]; // _transactions array is zero indexed, so first row with index 1 corresponds to first _transaction with index 0
+    // col goes through time 1ms to totalTime
     for (let col = 1; col < matrix[row].length; col++) {
-      // col goes through latency 1ms to totalTime
       const prevCombination = matrix[row - 1][col]; // best combination of previous transactions for this latency/col is taken from previous row
 
       matrix[row][col] = prevCombination; // initial guess: transaction won't render a new optimal combination, just copy previous combination
 
-      if (transaction.latency <= col) { // if our transaction fits in the time col
-        if (transaction.amount > prevCombination.totalAmount) { // ...check if by its own is better than previous combination
-          matrix[row][col] = { // ...if that's the case save the new winner combination for that time
+      // if our transaction fits in the time col
+      if (transaction.latency <= col) {
+        // ...check if by its own is better than previous combination
+        if (transaction.amount > prevCombination.totalAmount) {
+          // ...if that's the case save the new winner combination for that time
+          matrix[row][col] = {
             totalAmount: transaction.amount,
             transactions: [transaction],
             latency: transaction.latency,
@@ -57,7 +60,7 @@ export function prioritize(
       }
     }
   }
-  return matrix[matrix.length -1].pop();
+  return matrix[matrix.length - 1].pop();
 }
 
 export type Transaction = {
