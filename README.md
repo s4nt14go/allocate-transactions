@@ -1,4 +1,4 @@
-# Select the optimal transactions combination
+# Select the optimal combination of transactions
 
 Every second we receive many bank transactions that we forward to banks APIs for further processing, the transaction processing time takes different amount of time depending on where the bank is located. For example, if the bank is in the US - the API call will take very little time, on the contrary, if the bank is in Australia, the call will take more time.
 
