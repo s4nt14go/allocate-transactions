@@ -38,20 +38,19 @@ it('prioritizes 4 tests transactions', () => {
   expect(prioritization.latency).toBe(4);
 });
 
-describe('prioritizes using exercise files', () => {
+describe('prioritizes using sample files', () => {
   test.each([
-    [1000, 48, 35471.81, 1000],
-    [90, 8, 6972.29, 90],
-    [60, 5, 4675.71, 60],
-    [50, 5, 4139.43, 50],
+    [1000, 48, 35471.81],
+    [90, 8, 6972.29],
+    [60, 5, 4675.71],
+    [50, 5, 4139.43],
   ])(
-    'for a maximum time of %ims gives %i transactions with a total amount of $%f and latency %ims',
-    (totalTime, expectedLength, expectedTotalAmount, expectedLatency) => {
+    'for a maximum time of %ims gives %i transactions with a total amount of $%f',
+    (totalTime, expectedLength, expectedTotalAmount) => {
       const prioritization = prioritize(readFile(), totalTime);
 
       expect(prioritization.transactions.length).toBe(expectedLength);
       expect(prioritization.totalAmount).toBe(expectedTotalAmount);
-      expect(prioritization.latency).toBe(expectedLatency);
     }
   );
 });
